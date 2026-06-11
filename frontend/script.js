@@ -52,20 +52,15 @@ async function sendMessage() {
 
     try {
 
-        const response = await fetch(
-            "https://vesslyn-backend.onrender.com",
-            {
-                method: "POST",
-
-                headers: {
-                    "Content-Type": "application/json",
-                },
-
-                body: JSON.stringify({
-                    message: message,
-                }),
-            }
-        );
+        const response = await fetch(API_URL, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+                message: message
+            })
+        });
 
         const data = await response.json();
 
