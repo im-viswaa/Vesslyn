@@ -53,7 +53,7 @@ async function sendMessage() {
     try {
 
         const response = await fetch(
-            "http://localhost:5000/chat",
+            "https://vesslyn-backend.onrender.com",
             {
                 method: "POST",
 
