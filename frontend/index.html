@@ -1,0 +1,123 @@
+```html
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>7:7 🤍∞</title>
+
+    <link rel="stylesheet" href="style.css">
+</head>
+
+<body>
+
+    <div class="hearts"></div>
+
+    <div class="app">
+
+        <!-- Header -->
+        <div class="header">
+
+            <div class="header-left">
+
+                <div class="profile-container">
+
+                    <!-- Replace couple.jpg later -->
+                    <img
+                        src="couple.jpeg"
+                        class="profile-pic"
+                        alt="Profile"
+                    >
+
+                    <span class="online-dot"></span>
+
+                </div>
+
+            </div>
+
+            <div class="header-center">
+
+                <div class="title">
+                    7:7 🤍∞
+                </div>
+
+                <div class="subtitle">
+                    A little piece of heart from Viswa
+                </div>
+
+            </div>
+
+        </div>
+
+        <!-- Chat -->
+        <div id="chat-box" class="chat-box">
+
+            <div class="system-message">
+                ✨ Welcome to Vesslyn ✨
+            </div>
+
+            <div class="bot-message">
+                <div class="bubble">
+                    Hii ma 🥺❤️<br>
+                    Naan Vesslyn... whenever you need someone,
+                    naan inga dhaan iruken. 🌸
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Typing -->
+        <div id="typing" class="typing hidden">
+
+            <span></span>
+            <span></span>
+            <span></span>
+
+            <p>Vesslyn is typing...</p>
+
+        </div>
+
+        <!-- Quick Buttons -->
+        <div class="quick-actions">
+
+            <button onclick="quickMessage('Miss panren 🥺')">
+                🥺 Miss You
+            </button>
+
+            <button onclick="quickMessage('Goodnight 🌙')">
+                🌙 Goodnight
+            </button>
+
+            <button onclick="quickMessage('Need a hug 🤗')">
+                🤗 Hug
+            </button>
+
+            <button onclick="quickMessage('Motivate me 💪')">
+                💪 Motivate Me
+            </button>
+
+        </div>
+
+        <!-- Input -->
+        <div class="input-area">
+
+            <input
+                type="text"
+                id="message"
+                placeholder="Message 7:7 🤍∞..."
+                autocomplete="off"
+            >
+
+            <button id="send-btn" onclick="sendMessage()">
+                ❤️
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
+```
