@@ -1,3 +1,4 @@
+```javascript
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -5,6 +6,7 @@ import OpenAI from "openai";
 
 import personality from "./personality.js";
 import buildPrompt from "./promptBuilder.js";
+
 import {
     addMessage,
     getHistory,
@@ -31,29 +33,34 @@ app.post("/chat", async (req, res) => {
 
         if (!userMessage) {
             return res.status(400).json({
-                reply: "Enna ma? 🥺"
+                reply: "Enna ma? 🥺❤️"
             });
         }
 
-        // Since only Jesslyn uses this app
         const userId = "jesslyn";
 
-        // Save user's message
+        // Save user message
         addMessage(userId, "user", userMessage);
 
         const history = getHistory(userId);
         const memories = getMemories(userId);
 
-        // Save important memories automatically
         const lower = userMessage.toLowerCase();
 
+        // Save important memories automatically
         if (
             lower.includes("birthday") ||
             lower.includes("exam") ||
             lower.includes("sad") ||
             lower.includes("stress") ||
             lower.includes("family") ||
-            lower.includes("college")
+            lower.includes("college") ||
+            lower.includes("remember") ||
+            lower.includes("favorite") ||
+            lower.includes("pudikum") ||
+            lower.includes("pidikkum") ||
+            lower.includes("miss panren") ||
+            lower.includes("love")
         ) {
             saveMemory(userId, userMessage);
         }
@@ -64,20 +71,16 @@ app.post("/chat", async (req, res) => {
             memories
         );
 
-        const completion =
-            await client.responses.create({
-                model: process.env.MODEL || "gpt-5.5-mini",
-
-                input: prompt,
-
-                temperature: 0.9,
-
-                max_output_tokens: 180
-            });
+        const completion = await client.responses.create({
+            model: process.env.MODEL || "gpt-5.4-mini",
+            input: prompt,
+            temperature: 0.9,
+            max_output_tokens: 180
+        });
 
         const reply =
             completion.output_text?.trim() ||
-            "Enna ma 🥺❤️ konjam neram kazhichu pesalama?";
+            "Aiyoo ma 🥺❤️ konjam neram kazhichu pesalama?";
 
         // Save AI reply
         addMessage(userId, "assistant", reply);
@@ -88,13 +91,17 @@ app.post("/chat", async (req, res) => {
 
     } catch (error) {
 
-        console.error(error);
+        console.error("Chat Error:", error);
 
         return res.status(500).json({
             reply:
                 "Aiyoo thangoo 😭❤️ konjam problem vandhuruchu. Konjam neram kazhichu try pannalama? ✨"
         });
     }
+});
+
+app.get("/", (req, res) => {
+    res.send("🤍∞ Vesslyn Backend is Alive 🌸");
 });
 
 const PORT = process.env.PORT || 5000;
@@ -116,3 +123,4 @@ Running on : http://localhost:${PORT}
 =================================== ❤️
 `);
 });
+```
