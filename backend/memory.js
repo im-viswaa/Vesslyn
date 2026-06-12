@@ -8,13 +8,16 @@ export async function addMessage(userId, sender, message) {
             user_id: userId,
             sender,
             message
-        });
+        })
+        .select();
 
     console.log("ADD MESSAGE:", { data, error });
 
     if (error) {
         throw error;
     }
+
+    return data;
 }
 
 export async function getHistory(userId) {
@@ -40,13 +43,16 @@ export async function saveMemory(userId, content) {
         .insert({
             user_id: userId,
             content
-        });
+        })
+        .select();
 
     console.log("SAVE MEMORY:", { data, error });
 
     if (error) {
         throw error;
     }
+
+    return data;
 }
 
 export async function getMemories(userId) {
