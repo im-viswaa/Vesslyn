@@ -35,15 +35,21 @@ app.post("/chat", async (req, res) => {
             });
         }
 
-        // Since only Jesslyn uses this app
         const userId = "jesslyn";
 
-        // Save user's message permanently
-        await addMessage(userId, "user", userMessage);
+        console.log("===================================");
+        console.log("Incoming Message:", userMessage);
 
-        // Load previous chats and memories
+        // Save user message
+        await addMessage(userId, "user", userMessage);
+        console.log("✅ User message saved");
+
+        // Get history and memories
         const history = await getHistory(userId);
         const memories = await getMemories(userId);
+
+        console.log(`History Loaded: ${history.length}`);
+        console.log(`Memories Loaded: ${memories.length}`);
 
         // Auto-save important memories
         const lower = userMessage.toLowerCase();
@@ -66,6 +72,7 @@ app.post("/chat", async (req, res) => {
             lower.includes("anniversary")
         ) {
             await saveMemory(userId, userMessage);
+            console.log("❤️ Memory saved");
         }
 
         const prompt = buildPrompt(
@@ -74,26 +81,46 @@ app.post("/chat", async (req, res) => {
             memories
         );
 
-        const completion = await client.responses.create({
-            model: process.env.MODEL || "gpt-5.4-mini",
-            input: prompt,
-            temperature: 0.9,
-            max_output_tokens: 180
-        });
+        let reply = "";
 
-        const reply =
-            completion.output_text?.trim() ||
-            "Aiyoo ma 🥺❤️ konjam neram kazhichu pesalama?";
+        try {
+            const completion = await client.responses.create({
+                model: process.env.MODEL || "gpt-5.4-mini",
+                input: prompt,
+                temperature: 0.9,
+                max_output_tokens: 180
+            });
 
-        // Save AI reply permanently
+            reply =
+                completion.output_text?.trim() ||
+                "Aiyoo ma 🥺❤️ konjam neram kazhichu pesalama?";
+
+        } catch (openaiError) {
+
+            console.error("❌ OpenAI Error:", openaiError);
+
+            if (
+                openaiError.code === "rate_limit_exceeded" ||
+                openaiError.status === 429
+            ) {
+                reply =
+                    "Aiyoo ma 🥺❤️ konjam overa pesitten pola... konjam neram kazhichu varen. Naan inga dhan iruken 🤍∞";
+            } else {
+                throw openaiError;
+            }
+        }
+
+        // Save assistant reply
         await addMessage(userId, "assistant", reply);
+        console.log("🤖 Assistant reply saved");
 
         return res.json({
             reply
         });
 
     } catch (error) {
-        console.error("Chat Error:", error);
+
+        console.error("❌ Chat Error:", error);
 
         return res.status(500).json({
             reply:
@@ -111,7 +138,7 @@ const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
     console.log("===================================");
-    console.log("Vesslyn is alive");
+    console.log("🤍∞ Vesslyn is alive 🌸");
     console.log("Mode       : Viswa Mode");
     console.log("Personality: Loaded");
     console.log("Memory     : Supabase Forever Memory Active");
