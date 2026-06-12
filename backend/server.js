@@ -35,13 +35,15 @@ app.post("/chat", async (req, res) => {
             });
         }
 
+        // Since only Jesslyn uses this app
         const userId = "jesslyn";
 
-        // Save user message
-        addMessage(userId, "user", userMessage);
+        // Save user's message permanently
+        await addMessage(userId, "user", userMessage);
 
-        const history = getHistory(userId);
-        const memories = getMemories(userId);
+        // Load previous chats and memories
+        const history = await getHistory(userId);
+        const memories = await getMemories(userId);
 
         // Auto-save important memories
         const lower = userMessage.toLowerCase();
@@ -58,9 +60,12 @@ app.post("/chat", async (req, res) => {
             lower.includes("pudikum") ||
             lower.includes("pidikkum") ||
             lower.includes("love") ||
-            lower.includes("miss panren")
+            lower.includes("miss panren") ||
+            lower.includes("first time") ||
+            lower.includes("special") ||
+            lower.includes("anniversary")
         ) {
-            saveMemory(userId, userMessage);
+            await saveMemory(userId, userMessage);
         }
 
         const prompt = buildPrompt(
@@ -80,8 +85,8 @@ app.post("/chat", async (req, res) => {
             completion.output_text?.trim() ||
             "Aiyoo ma 🥺❤️ konjam neram kazhichu pesalama?";
 
-        // Save AI reply
-        addMessage(userId, "assistant", reply);
+        // Save AI reply permanently
+        await addMessage(userId, "assistant", reply);
 
         return res.json({
             reply
@@ -97,9 +102,9 @@ app.post("/chat", async (req, res) => {
     }
 });
 
-// Health check route
+// Health Check
 app.get("/", (req, res) => {
-    res.send("Vesslyn Backend is Alive");
+    res.send("🤍∞ Vesslyn Backend is Alive 🌸");
 });
 
 const PORT = process.env.PORT || 5000;
@@ -109,7 +114,7 @@ app.listen(PORT, () => {
     console.log("Vesslyn is alive");
     console.log("Mode       : Viswa Mode");
     console.log("Personality: Loaded");
-    console.log("Memory     : Active");
+    console.log("Memory     : Supabase Forever Memory Active");
     console.log(`GPT Model  : ${process.env.MODEL}`);
     console.log(`Running on : http://localhost:${PORT}`);
     console.log("===================================");

@@ -1,43 +1,38 @@
-const MAX_HISTORY = 20;
+import supabase from "./supabase.js";
 
-const conversations = new Map();
-
-export function addMessage(userId, role, content) {
-    if (!conversations.has(userId)) {
-        conversations.set(userId, []);
-    }
-
-    const history = conversations.get(userId);
-
-    history.push({
-        role,
-        content,
-        timestamp: Date.now()
+export async function addMessage(userId, sender, message) {
+    await supabase.from("messages").insert({
+        user_id: userId,
+        sender,
+        message
     });
-
-    if (history.length > MAX_HISTORY) {
-        history.shift();
-    }
 }
 
-export function getHistory(userId) {
-    return conversations.get(userId) || [];
+export async function getHistory(userId) {
+    const { data } = await supabase
+        .from("messages")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(20);
+
+    return (data || []).reverse();
 }
 
-export function clearHistory(userId) {
-    conversations.delete(userId);
+export async function saveMemory(userId, content) {
+    await supabase.from("relationship_memories").insert({
+        user_id: userId,
+        content
+    });
 }
 
-export function saveMemory(userId, memory) {
-    const key = `${userId}_memories`;
+export async function getMemories(userId) {
+    const { data } = await supabase
+        .from("relationship_memories")
+        .select("*")
+        .eq("user_id", userId)
+        .order("created_at", { ascending: false })
+        .limit(30);
 
-    if (!conversations.has(key)) {
-        conversations.set(key, []);
-    }
-
-    conversations.get(key).push(memory);
-}
-
-export function getMemories(userId) {
-    return conversations.get(`${userId}_memories`) || [];
+    return data || [];
 }
