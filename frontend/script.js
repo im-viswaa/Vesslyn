@@ -1,3 +1,5 @@
+const API_URL = "https://vesslyn-backend.onrender.com/chat";
+
 const chatBox = document.getElementById("chat-box");
 const messageInput = document.getElementById("message");
 const typing = document.getElementById("typing");
@@ -14,7 +16,6 @@ function quickMessage(text) {
 }
 
 function addMessage(message, sender) {
-
     const wrapper = document.createElement("div");
 
     wrapper.className =
@@ -26,8 +27,7 @@ function addMessage(message, sender) {
 
     bubble.className = "bubble";
 
-    bubble.innerHTML = message
-        .replace(/\n/g, "<br>");
+    bubble.innerHTML = message.replace(/\n/g, "<br>");
 
     wrapper.appendChild(bubble);
 
@@ -37,7 +37,6 @@ function addMessage(message, sender) {
 }
 
 async function sendMessage() {
-
     const message = messageInput.value.trim();
 
     if (!message) return;
@@ -48,10 +47,7 @@ async function sendMessage() {
 
     typing.classList.remove("hidden");
 
-    chatBox.scrollTop = chatBox.scrollHeight;
-
     try {
-
         const response = await fetch(API_URL, {
             method: "POST",
             headers: {
@@ -68,22 +64,20 @@ async function sendMessage() {
 
         addMessage(
             data.reply ||
-            "Aiyoo ma 🥺❤️ konjam problem vandhuruchu. Try pannalama? ✨",
+            "Aiyoo ma 🥺❤️ konjam problem vandhuruchu.",
             "bot"
         );
 
     } catch (error) {
-
         console.error(error);
 
         typing.classList.add("hidden");
 
         addMessage(
-            "Aiyoo thangoo 😭❤️ server reach aagala. Backend running ah check pannu ma ✨",
+            "Aiyoo thangoo 😭❤️ server reach aagala.",
             "bot"
         );
     }
 }
 
-/* Auto focus */
 messageInput.focus();
