@@ -1,4 +1,4 @@
-```javascript
+
 import express from "express";
 import cors from "cors";
 import dotenv from "dotenv";
@@ -26,9 +26,7 @@ const client = new OpenAI({
 });
 
 app.post("/chat", async (req, res) => {
-
     try {
-
         const userMessage = req.body.message?.trim();
 
         if (!userMessage) {
@@ -45,9 +43,9 @@ app.post("/chat", async (req, res) => {
         const history = getHistory(userId);
         const memories = getMemories(userId);
 
+        // Auto-save important memories
         const lower = userMessage.toLowerCase();
 
-        // Save important memories automatically
         if (
             lower.includes("birthday") ||
             lower.includes("exam") ||
@@ -59,8 +57,8 @@ app.post("/chat", async (req, res) => {
             lower.includes("favorite") ||
             lower.includes("pudikum") ||
             lower.includes("pidikkum") ||
-            lower.includes("miss panren") ||
-            lower.includes("love")
+            lower.includes("love") ||
+            lower.includes("miss panren")
         ) {
             saveMemory(userId, userMessage);
         }
@@ -90,7 +88,6 @@ app.post("/chat", async (req, res) => {
         });
 
     } catch (error) {
-
         console.error("Chat Error:", error);
 
         return res.status(500).json({
@@ -100,27 +97,20 @@ app.post("/chat", async (req, res) => {
     }
 });
 
+// Health check route
 app.get("/", (req, res) => {
-    res.send("🤍∞ Vesslyn Backend is Alive 🌸");
+    res.send("Vesslyn Backend is Alive");
 });
 
 const PORT = process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-
-    console.log(`
-🤍∞ ===================================
-
-Vesslyn is alive 🌸
-
-Mode       : Viswa Mode
-Personality: Loaded
-Memory     : Active
-GPT Model  : ${process.env.MODEL}
-
-Running on : http://localhost:${PORT}
-
-=================================== ❤️
-`);
+    console.log("===================================");
+    console.log("Vesslyn is alive");
+    console.log("Mode       : Viswa Mode");
+    console.log("Personality: Loaded");
+    console.log("Memory     : Active");
+    console.log(`GPT Model  : ${process.env.MODEL}`);
+    console.log(`Running on : http://localhost:${PORT}`);
+    console.log("===================================");
 });
-```
