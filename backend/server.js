@@ -27,6 +27,7 @@ const client = new OpenAI({
 
 app.post("/chat", async (req, res) => {
     try {
+
         const userMessage = req.body.message?.trim();
 
         if (!userMessage) {
@@ -35,46 +36,73 @@ app.post("/chat", async (req, res) => {
             });
         }
 
+        // Since only Jesslyn uses Vesslyn
         const userId = "jesslyn";
 
         console.log("===================================");
         console.log("Incoming Message:", userMessage);
 
-        // Save user message
-        await addMessage(userId, "user", userMessage);
+        // Save user message permanently
+        await addMessage(
+            userId,
+            "user",
+            userMessage
+        );
+
         console.log("✅ User message saved");
 
-        // Get history and memories
+        // Load recent chats
         const history = await getHistory(userId);
+
+        // Load important memories
         const memories = await getMemories(userId);
 
-        console.log(`History Loaded: ${history.length}`);
-        console.log(`Memories Loaded: ${memories.length}`);
+        console.log(
+            `History Loaded: ${history.length}`
+        );
 
-        // Auto-save important memories
-        const lower = userMessage.toLowerCase();
+        console.log(
+            `Memories Loaded: ${memories.length}`
+        );
+
+        /*
+         * Save important memories automatically
+         */
+
+        const lower =
+            userMessage.toLowerCase();
 
         if (
             lower.includes("birthday") ||
-            lower.includes("exam") ||
-            lower.includes("sad") ||
-            lower.includes("stress") ||
-            lower.includes("family") ||
-            lower.includes("college") ||
             lower.includes("remember") ||
-            lower.includes("favorite") ||
-            lower.includes("pudikum") ||
-            lower.includes("pidikkum") ||
             lower.includes("love") ||
-            lower.includes("miss panren") ||
+            lower.includes("anniversary") ||
+            lower.includes("favorite") ||
             lower.includes("first time") ||
+            lower.includes("confession") ||
             lower.includes("special") ||
-            lower.includes("anniversary")
+            lower.includes("future") ||
+            lower.includes("dream") ||
+            lower.includes("purple") ||
+            lower.includes("miss panren") ||
+            lower.includes("pidikkum") ||
+            lower.includes("pudikum") ||
+            lower.includes("mother") ||
+            lower.includes("sister") ||
+            lower.includes("family")
         ) {
-            await saveMemory(userId, userMessage);
-            console.log("❤️ Memory saved");
+
+            await saveMemory(
+                userId,
+                userMessage
+            );
+
+            console.log(
+                "🧠 Important Memory Saved"
+            );
         }
 
+        // Build prompt
         const prompt = buildPrompt(
             userMessage,
             history,
@@ -84,12 +112,19 @@ app.post("/chat", async (req, res) => {
         let reply = "";
 
         try {
-            const completion = await client.responses.create({
-                model: process.env.MODEL || "gpt-5.4-mini",
-                input: prompt,
-                temperature: 0.9,
-                max_output_tokens: 180
-            });
+
+            const completion =
+                await client.responses.create({
+                    model:
+                        process.env.MODEL ||
+                        "gpt-5.4-mini",
+
+                    input: prompt,
+
+                    temperature: 0.9,
+
+                    max_output_tokens: 180
+                });
 
             reply =
                 completion.output_text?.trim() ||
@@ -97,22 +132,36 @@ app.post("/chat", async (req, res) => {
 
         } catch (openaiError) {
 
-            console.error("❌ OpenAI Error:", openaiError);
+            console.error(
+                "❌ OpenAI Error:",
+                openaiError
+            );
 
             if (
-                openaiError.code === "rate_limit_exceeded" ||
+                openaiError.code ===
+                    "rate_limit_exceeded" ||
                 openaiError.status === 429
             ) {
+
                 reply =
                     "Aiyoo ma 🥺❤️ konjam overa pesitten pola... konjam neram kazhichu varen. Naan inga dhan iruken 🤍∞";
+
             } else {
+
                 throw openaiError;
             }
         }
 
-        // Save assistant reply
-        await addMessage(userId, "assistant", reply);
-        console.log("🤖 Assistant reply saved");
+        // Save Vesslyn's reply
+        await addMessage(
+            userId,
+            "assistant",
+            reply
+        );
+
+        console.log(
+            "🤖 Assistant reply saved"
+        );
 
         return res.json({
             reply
@@ -120,7 +169,10 @@ app.post("/chat", async (req, res) => {
 
     } catch (error) {
 
-        console.error("❌ Chat Error:", error);
+        console.error(
+            "❌ Chat Error:",
+            error
+        );
 
         return res.status(500).json({
             reply:
@@ -131,18 +183,46 @@ app.post("/chat", async (req, res) => {
 
 // Health Check
 app.get("/", (req, res) => {
-    res.send("🤍∞ Vesslyn Backend is Alive 🌸");
+    res.send(
+        "🤍∞ Vesslyn Backend is Alive 🌸"
+    );
 });
 
-const PORT = process.env.PORT || 5000;
+const PORT =
+    process.env.PORT || 5000;
 
 app.listen(PORT, () => {
-    console.log("===================================");
-    console.log("🤍∞ Vesslyn is alive 🌸");
-    console.log("Mode       : Viswa Mode");
-    console.log("Personality: Loaded");
-    console.log("Memory     : Supabase Forever Memory Active");
-    console.log(`GPT Model  : ${process.env.MODEL}`);
-    console.log(`Running on : http://localhost:${PORT}`);
-    console.log("===================================");
+
+    console.log(
+        "==================================="
+    );
+
+    console.log(
+        "🤍∞ Vesslyn is alive 🌸"
+    );
+
+    console.log(
+        "Mode       : Viswa Mode"
+    );
+
+    console.log(
+        "Personality: Loaded"
+    );
+
+    console.log(
+        "Memory     : Supabase Forever Memory Active"
+    );
+
+    console.log(
+        `GPT Model  : ${process.env.MODEL}`
+    );
+
+    console.log(
+        `Running on : http://localhost:${PORT}`
+    );
+
+    console.log(
+        "==================================="
+    );
 });
+
